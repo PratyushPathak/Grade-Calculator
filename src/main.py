@@ -1,44 +1,43 @@
+import functionality
 import json
+import PySimpleGUI as sg
 
-grades = {}
-criteria = {}
+try:
+    with open('grades.json','x') as f:
+        f.write("{}")
+except FileExistsError:
+    with open('grades.json', 'r') as readfile:
+        grades = json.load(readfile)
 
-with open('grades.json', 'r') as readfile:
-    grades = json.load(readfile)
-with open('criteria.json', 'r') as openfile:
-    criteria = json.load(openfile)
-          
-def add_grade(course, category, score):
-    if course not in grades: return
-    if category not in grades[course]: return
-    grades[course][category].append(score)
+try:
+    with open('criteria.json','x') as g:
+        g.write("{}")
+except FileExistsError:
+    with open('criteria.json', 'r') as openfile:
+        criteria = json.load(openfile)
 
-def remove_grade(course, category, score):
-    if course not in grades: return
-    if category not in grades[course]: return
-    grades[course][category].remove(score)
+# All the stuff inside your window.
+layout = []
 
-def add_course(course):
-    if course in grades: return
-    grades[course] = {}
 
-def remove_course(course):
-    if course not in grades: return
-    del grades[course]
+# Create the Window
+window = sg.Window('Grade Calculator', layout, size=(800, 600))
 
-def add_category(course, category):
-    if course not in grades: return
-    if category in grades[course]: return
-    grades[course][category] = []
 
-def remove_category(course, category):
-    if course not in grades: return
-    if category not in grades[course]: return
-    del grades[course][category]
+# Event Loop to process "events" and get the "values" of the inputs
+while True:
+    event, values = window.read()
+    if event == sg.WIN_CLOSED or event == 'Exit': # if user closes window or clicks cancel
+        break
+    
+    if(len(grades) == 0):
+        while True:
+            layout.append(sg.Text("Enter course name: "))
+            layout.append(sg.Input("Text goes here"))
+        
+       
+    
 
-store = json.dumps(grades, indent=4)
-with open('grades.json', 'w') as outfile:
-    outfile.write(store)
-storeC = json.dumps(grades, indent=4)
-with open('criteria.json', 'w') as outfile:
-    outfile.write(storeC)
+window.close()
+
+
